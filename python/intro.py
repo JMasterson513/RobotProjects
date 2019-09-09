@@ -1,7 +1,12 @@
-user = input("Enter your name: ")
-#user = raw_input("Enter your name: ")
+#user = input("Enter your name: ")
+user = raw_input("Enter your name: ")
 
-def name(n='student'):
-    print('Welcome ' + n)
+class Lab():
 
-name(user)
+    def name(n='student'):
+        print('Welcome ' + n)
+
+L = Lab()
+
+L.name(user)
+
