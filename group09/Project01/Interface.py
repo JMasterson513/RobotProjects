@@ -5,26 +5,26 @@ import time
 
 class Interface:
     def _init_(self):
-        self.connection = serial.Serial('/dev/ttyUSB0', baudrate = 115200) #made this number a constant variable
+        self.ser = serial.Serial('/dev/ttyUSB0', baudrate = 115200) #made this number a constant variable
     
-    #Connect to the serial interfact 1.a
-    def Open(self):
-        self.connection.open()
-        time.sleep(0.0125)
+    #1.a - connect to the serial interface
+    def open(self):
+        self.ser.open()
+        time.sleep(0.0125) #make the sleep time a constant
     
     #1.b - Send commands
     def Send(self, param):
-        self.connection.write(param)
+        self.ser.write(param)
         time.sleep(0.0125)
 
     #1.c - read input data
     def Read(self, param):
-        return self.connection.read(param)
-        time.sleep(0.0125)
+        return self.ser.read(param)
+        #time.sleep(0.0125)
 
-    #Closes the connection to the serial interface 1.d
+    #1.d - closes the connection to the serial interface
     def Close(self):
-        self.connection.close()
+        self.ser.close()
 
 roomba = Interface()
 
