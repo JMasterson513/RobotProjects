@@ -5,7 +5,7 @@ import time
 
 class Interface:
     def _init_(self):
-        self.connection = serial.Serial('/dev/ttyUSB0', baudrate = 115200)
+        self.connection = serial.Serial('/dev/ttyUSB0', baudrate = 115200) #made this number a constant variable
     
     #Connect to the serial interfact 1.a
     def Open(self):
@@ -25,6 +25,7 @@ class Interface:
     #Closes the connection to the serial interface 1.d
     def Close(self):
         self.connection.close()
+
 roomba = Interface()
 
 roomba.open()
