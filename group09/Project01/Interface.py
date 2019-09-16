@@ -22,9 +22,10 @@ class Interface:
 
     #1.c - read input data
     def read(self, param):
-        return self.connection.read(param)
+        return self.connection.read("i", param)
         #time.sleep(0.0125)
 
     #1.d - closes the connection to the serial interface
     def close(self):
         self.connection.close()
+roomba = Interface()
