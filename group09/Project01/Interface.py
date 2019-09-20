@@ -5,6 +5,7 @@ import time
 
 port = '/dev/ttyUSB0'
 baudrate = 115200
+sleep_time = 0.0125
 
 class Interface:
     def __init__(self):
@@ -13,19 +14,20 @@ class Interface:
     #1.a - connect to the serial interface
     def open(self):
         self.connection.open()
-        time.sleep(0.0125) #make the sleep time a constant
+        time.sleep(sleep_time) #make the sleep time a constant
     
     #1.b - Send commands
     def send(self, param):
         self.connection.write(param)
-        time.sleep(0.0125)
+        time.sleep(sleep_time)
 
     #1.c - read input data
+    # returns 
     def read(self, param):
         return self.connection.read("i", param)
-        #time.sleep(0.0125)
+        #time.sleep(sleep_time)
 
     #1.d - closes the connection to the serial interface
     def close(self):
         self.connection.close()
-roomba = Interface()
+#roomba = Interface()
