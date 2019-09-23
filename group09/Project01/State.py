@@ -4,7 +4,9 @@ from Interface import Interface
 import struct
 
 clean = 0
-sleep_time = 0.0125
+drive = 137
+query = 142 # queries for the package 
+packet = 18
 class State:
     def __init__(self):
         self.Interface = Interface()
@@ -14,13 +16,15 @@ class State:
     
     # look at the unpack docs and check the package and list number
     def readState(self):
-        read_in_string = self.Interface.read(18)
-        read_in_string = struct.unpack('>h2B'read_in_string)
-        self.state(read_in_string[0])
+        sent_string = struct.pack('>B2h', chr(query), chr(packet))
+        self.Interface.send(sent_string)
+        received_string = self.Interface.read(1)
+        button_push = struct.unpack('>h2B', received_string)
+        return button_push[clean]
 
     # Make sure to set to a mode which can use drive like safe
     def drive(self, velocity, radius):
-        packed = struct.pack('>B2h', 137, velocity, radius)
+        packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
    
 roomba = State()
