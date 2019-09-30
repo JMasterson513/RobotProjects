@@ -24,7 +24,7 @@ class Interface:
     #1.c - read input data
     # returns 
     def read(self, param):
-        return self.connection.read("i", param)
+        return self.connection.read(param)
         #time.sleep(sleep_time)
 
     #1.d - closes the connection to the serial interface

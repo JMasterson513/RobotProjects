@@ -2,6 +2,7 @@
 
 from Interface import Interface
 import struct
+import time
 
 clean = 0
 drive = 137
@@ -16,10 +17,10 @@ class State:
     
     # look at the unpack docs and check the package and list number
     def readState(self):
-        sent_string = struct.pack('>B2h', chr(query), chr(packet))
+        sent_string = struct.pack(chr(query) + chr(packet));
         self.Interface.send(sent_string)
         received_string = self.Interface.read(1)
-        button_push = struct.unpack('>h2B', received_string)
+        button_push = struct.unpack('B', received_string)
         return button_push[clean]
 
     # Make sure to set to a mode which can use drive like safe
@@ -27,8 +28,10 @@ class State:
         packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
    
+
+
 roomba = State()
 roomba.state(131) #sets it to safe mode
-roomba.drive(-200, 50)          
-        
+roomba.drive(150, 1)
+
 
