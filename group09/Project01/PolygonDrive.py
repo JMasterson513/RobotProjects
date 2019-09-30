@@ -1,3 +1,5 @@
+# Copyright 2019 Joseph Masterson, Cassidy Carter, Alfred Stephenson II
+
 from State import State
 from time import sleep
 import math
@@ -27,7 +29,7 @@ stop = 173
 start = 128
 
 #2pi angle
-full_angle = 2 * math.pi
+full_angle = 360
 
 class PolygonDrive:
 
@@ -47,13 +49,13 @@ class PolygonDrive:
 
     # Calculates each interior angle
     def calcIntAngle(self, N):
-        total_angle = math.radians((N - 2) * 180) # finds the total angle
+        total_angle = (N - 2) * 180 # finds the total angle
         return total_angle / N # returns the interior angle in radians
 
     def calcExtAngle(self, N):
         int_angle = self.calcIntAngle(N)
-        print(full_angle - int_angle)
-        return full_angle - int_angle
+        ext_angle = full_angle - int_angle
+        return math.radians(ext_angle)
 
     # Calculates the time it takes to make a turn
     def turnTime(self, N):
@@ -62,13 +64,9 @@ class PolygonDrive:
     def polygonDrive(self, N):
         #time to sleep on striaght sides
         sleep1 = self.staightTime(N)
-        print("sleep straight")
-        print(sleep1)
 
         #time to sleep on turns
         sleep2 = self.turnTime(N)
-        print("sleep turn")
-        print(sleep2)
 
         for i in range(N):
             self.state.drive(velocity, straight_radius)
