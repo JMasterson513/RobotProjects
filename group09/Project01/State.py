@@ -2,12 +2,12 @@
 
 from Interface import Interface
 import struct
-import time
 
 clean = 0
 drive = 137
 query = 142 # queries for the package 
 packet = 18
+
 class State:
     def __init__(self):
         self.Interface = Interface()
@@ -17,7 +17,7 @@ class State:
     
     # look at the unpack docs and check the package and list number
     def readState(self):
-        sent_string = (chr(query) + chr(packet))
+        sent_string = struct.pack(chr(query) + chr(packet));
         self.Interface.send(sent_string)
         received_string = self.Interface.read(1)
         button_push = struct.unpack('B', received_string)
@@ -27,5 +27,4 @@ class State:
     def drive(self, velocity, radius):
         packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
-   
 

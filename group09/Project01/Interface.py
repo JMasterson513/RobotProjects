@@ -30,4 +30,3 @@ class Interface:
     #1.d - closes the connection to the serial interface
     def close(self):
         self.connection.close()
-#roomba = Interface()
