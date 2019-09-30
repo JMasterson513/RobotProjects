@@ -1,12 +1,16 @@
-from State import State
-import time
+perimeter = 2.0
+velocity = .150
 
-roomba = State()
+def sideLength(N):
+    return perimeter / N
 
-roomba.State.drive(100, 0)
-time.sleep(5)
-roomba.State.drive(100, 1)
-time.sleep(3)
-roomba.State.drive(100, 0)
-time.sleep(5)
+def sideDriveTime(N):
+    sideLength = sideLength(N)
+    return sideLength / velocity
 
+def totalAngle(N):
+    return (N-2)*180
+
+def interiorAngle(N):
+    totalAngle = totalAngle(N)
+    
