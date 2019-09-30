@@ -17,7 +17,7 @@ class State:
     
     # look at the unpack docs and check the package and list number
     def readState(self):
-        sent_string = struct.pack(chr(query) + chr(packet));
+        sent_string = (chr(query) + chr(packet))
         self.Interface.send(sent_string)
         received_string = self.Interface.read(1)
         button_push = struct.unpack('B', received_string)
@@ -28,10 +28,4 @@ class State:
         packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
    
-
-
-roomba = State()
-roomba.state(131) #sets it to safe mode
-roomba.drive(150, 1)
-
 
