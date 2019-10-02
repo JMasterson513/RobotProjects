@@ -2,6 +2,7 @@
 
 from Interface import Interface
 import struct
+import time
 
 clean = 0
 drive = 137
@@ -27,4 +28,5 @@ class State:
     def drive(self, velocity, radius):
         packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
+
 
