@@ -21,6 +21,7 @@ class State:
         sent_string = struct.pack(chr(query) + chr(packet));
         self.Interface.send(sent_string)
         received_string = self.Interface.read(1)
+
         button_push = struct.unpack('B', received_string)
         return button_push[clean]
 
