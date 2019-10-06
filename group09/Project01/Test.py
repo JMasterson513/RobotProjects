@@ -9,6 +9,7 @@ perimeter = 2000.0 # perimeter of the polygon
 velocity = 100.0 # set velocity of the robot
 totalAngle = 360 # degrees in a circle
 angularVelocity = 200.0 / 235.0
+
 safe = 131 # opcode for safe mode
 start = 128 # opcode for start mode
 stop = 173 # opcode for stop mode
@@ -63,4 +64,3 @@ cleanThread.start()
 
 driveThread.join()
 cleanThread.join()
-
