@@ -18,7 +18,7 @@ class State:
     
     # look at the unpack docs and check the package and list number
     def readState(self):
-        sent_string = struct.pack(chr(query) + chr(packet));
+        sent_string = struct.pack('BB', query, packet);
         self.Interface.send(sent_string)
         received_string = self.Interface.read(1)
 
@@ -29,5 +29,4 @@ class State:
     def drive(self, velocity, radius):
         packed = struct.pack('>B2h', drive, velocity, radius)
         self.Interface.send(packed)
-
 

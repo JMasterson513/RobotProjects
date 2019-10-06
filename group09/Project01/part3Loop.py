@@ -3,20 +3,18 @@
 from State import State
 import math
 import time
-import threading
 
 perimeter = 2000.0 # perimeter of the polygon
 velocity = 100.0 # set velocity of the robot
 totalAngle = 360 # degrees in a circle
 angularVelocity = 200.0 / 235.0
-
 safe = 131 # opcode for safe mode
 start = 128 # opcode for start mode
 stop = 173 # opcode for stop mode
 straightRadius = 0
 turnRadius = 1
 
-class Test:
+class part3Loop:
     def __init__(self): #default constructor
         self.State = State()
         self.State.state(start)
@@ -43,24 +41,20 @@ class Test:
 
         for i in range(N):
             self.State.drive(velocity, straightRadius)
-            time.sleep(straightSleep)
+            while time.sleep(straightSleep):
+                print "sleeping"
+                self.checkCleanButton()
+
             self.State.drive(velocity, turnRadius )
-            time.sleep(cornerSleep) 
+            while time.sleep(cornerSleep):
+                self.checkCleanButton()
+
         self.State.drive(0,0)
 
     def checkCleanButton(self):
         print self.State.readState()
-        return self.State.readState()
+        return bool(self.State.readState())
 
-roomba = Test()
-driveThread = threading.Thread(target = roomba.drivePolygon, name = 'Drive Thread', 
-        kwargs = dict(N = 6))
-cleanThread = threading.Thread(target = roomba.checkCleanButton, name = 'Clean Thread')
+roomba = part3Loop()
+roomba.drivePolygon(6)
 
-driveThread.start()
-cleanThread.start()
-
-
-
-driveThread.join()
-cleanThread.join()
