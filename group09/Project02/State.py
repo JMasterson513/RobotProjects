@@ -77,9 +77,14 @@ class State:
         self.state(full)
 
     def PacketQuery(self, packet, packet_size):
-        sent_string = struct.pack('BB', query, packet);
+        sent_string = struct.pack('BB', query, packet)
         recieved_string = self.Interface.read(packet_size)
         return struct.unpack('B', recieved_string)
+
+    def PacketSignedQuery( self, packet, packet_size):
+        sent_string = struct.pack('bb' , query, packet)
+        recieved_string = self.Interface.read(packet_size)
+        return struct.unpack('B' , recieved_string)
 
     def readDrop(self):
         drop_push = str(self.PacketQuery(drop_packet, 1))
@@ -120,12 +125,12 @@ class State:
 
         #TODO deal with signed ints
         def DistanceRead(self):
-            distance_read = self.PacketQuery(distance_packet, 2)
+            distance_read = self.PacketSignedQuery(distance_packet, 2)
             return distance_read
 
         #TODO deal with signed ints and converting to radians
         def AngleRead(self):
-            angle_read = self.PacketQuery(angle_read, 2)
+            angle_read = self.PacketSignedQuery(angle_read, 2)
             return angle_read
 
         def DriveDirect(self, rightVelocity, leftVelocity):
@@ -143,4 +148,8 @@ class State:
             self.Interface.send(song)
 
                 
+roomba = State()
+
+while True:
+    print drop
 
