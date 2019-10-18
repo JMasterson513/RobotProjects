@@ -47,7 +47,10 @@ drive_direct = 145
 
 # Opcode for the song
 song = 140
-class State:
+
+# Constant to divide by when getting the anlge
+angle_divisor = 0.324056
+class RoombaControl:
 
     # Default Constructor - connects to the romba
     def __init__(self):
@@ -78,11 +81,13 @@ class State:
 
     def PacketQuery(self, packet, packet_size):
         sent_string = struct.pack('BB', query, packet)
+        self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
         return struct.unpack('B', recieved_string)
 
     def PacketSignedQuery( self, packet, packet_size):
         sent_string = struct.pack('bb' , query, packet)
+        self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
         return struct.unpack('B' , recieved_string)
 
@@ -128,28 +133,27 @@ class State:
             distance_read = self.PacketSignedQuery(distance_packet, 2)
             return distance_read
 
-        #TODO deal with signed ints and converting to radians
+        #TODO deal with signed ints and converting to radians - do we need to divide?
         def AngleRead(self):
             angle_read = self.PacketSignedQuery(angle_read, 2)
-            return angle_read
+            return angle_read / angle_divisor
 
         def DriveDirect(self, rightVelocity, leftVelocity):
-            direct_pack = struct.pack('>B2h', drive, rightVelocity, leftVelocity)
+            direct_pack = struct.pack('>B2h', drive_direct, rightVelocity, leftVelocity)
             self.Interface.send(direct_pack)
 
         def Song(self, song_length, note_length):
             count = song_length / note_length
             notes = []
             while count > 0:
-                print "Enter note frequency: "
+                print("Enter note frequency: ")
                 notes.append(raw_input)
                 notes.append(note_length)
-            song = struct.pack('BBBB' song, 1, song_length, notes)
+            song = struct.pack('BBBB', song, 1, song_length, notes)
             self.Interface.send(song)
 
                 
-roomba = State()
+roomba = RoombaControl()
 
 while True:
-    print drop
-
+    roomba.readDrop()
