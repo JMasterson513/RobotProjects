@@ -85,11 +85,11 @@ class RoombaControl:
         recieved_string = self.Interface.read(packet_size)
         return struct.unpack('B', recieved_string)
 
-    def PacketSignedQuery( self, packet, packet_size):
+    def PacketSignedQuery(self, packet, packet_size):
         sent_string = struct.pack('bb' , query, packet)
         self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
-        return struct.unpack('B' , recieved_string)
+        return struct.unpack('b' , recieved_string)
 
     def readDrop(self):
         drop_push = str(self.PacketQuery(drop_packet, 1))
