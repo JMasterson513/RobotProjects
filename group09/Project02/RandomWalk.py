@@ -6,8 +6,7 @@ passive = 128
 # Opcode for safe mode
 safe = 131
 
-def RandomWalk:
-
+class RandomWalk:
     # Initializes the connection and sets robot in safe and passive modes
     def __init__(self):
         self.Control = RoombaControl()
@@ -15,9 +14,6 @@ def RandomWalk:
         self.Control.state(safe)
 
     def Walk(self):
-        drop_sensors = self.Control.readDrop()
-        cliff_sensors self.Control.readCliff()
-
         
         # if roomba is stopped
         
@@ -32,15 +28,17 @@ def RandomWalk:
         # repeat
     
     # Continually read the state of the button
-    def readButton(self):
-        
-        # Global variable which switches depending on whether on the button has been hit
-        global run
-
-        # Loop the whole time checking the state of the button
+    def readButton(self):       
+        global button
         while done:
-            time.sleep(button_sleep) # provides space between button presses so there is no double reading 
+            time.sleep(button_sleep)
             button_state = bool(self.State.readState())
             if(button_state):
-                run = not run # Switches between running and not running
-               
+                button = not button # Switches between running and not running
+
+    def readDrop(self):
+        global drop
+        while done:
+            drop_state = bool(self.State.readDrop())
+            if(drop_state):
+                drop = not drop
