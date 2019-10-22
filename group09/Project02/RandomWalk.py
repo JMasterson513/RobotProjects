@@ -15,6 +15,8 @@ velocity_right = 150
 
 def RandomWalk:
 
+class RandomWalk: 
+  
     # Initializes the connection and sets robot in safe and passive modes
     def __init__(self):
         self.Control = RoombaControl()
@@ -29,6 +31,8 @@ def RandomWalk:
             self.Control.DriveDirect(velocity_left, velocity_right)
          # if roomba is stopped
         
+        # if roomba is stopped
+        
         # if none of the drops or cliffs are activated
         
         # once the clean button is pressed
@@ -40,6 +44,7 @@ def RandomWalk:
         # repeat
     
     # Continually read the state of the button
+ 
     def readButton(self):
         
         # Global variable which switches depending on whether on the button has been hit
@@ -70,3 +75,17 @@ def RandomWalk:
 	        cliff_run = not cliff_run
 
 
+    def readButton(self):       
+        global button
+        while done:
+            time.sleep(button_sleep)
+            button_state = bool(self.State.readState())
+            if(button_state):
+                button = not button # Switches between running and not running
+
+    def readDrop(self):
+        global drop
+        while done:
+            drop_state = bool(self.State.readDrop())
+            if(drop_state):
+                drop = not drop
