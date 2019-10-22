@@ -1,6 +1,7 @@
 # Copyright 2019 Joe Masterson, Cassidy Carter, and Alfred Stephenson II
 
 from Interface import Interface
+import time
 import struct
 
 # Element of the packet where clean is returned
@@ -67,7 +68,6 @@ class RoombaControl:
         sent_string = struct.pack('BB', query, button_packet) # ask for the button state
         self.Interface.send(sent_string) 
         received_string = self.Interface.read(1) # read in the state
-
         button_push = struct.unpack('B', received_string) # Interpert the state
         return button_push[clean]
 
@@ -84,18 +84,26 @@ class RoombaControl:
         sent_string = struct.pack('BB', query, packet)
         self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
+        print recieved_string
         return struct.unpack('B', recieved_string)
 
     def PacketSignedQuery( self, packet, packet_size):
-        sent_string = struct.pack('bb' , query, packet)
+        sent_string = struct.pack('HH' , query, packet)
         self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
-        return struct.unpack('b' , recieved_string)
+        return struct.unpack('H' , recieved_string)
 
     def readDrop(self):
-        drop_push = str(self.PacketQuery(drop_packet, 1))
+        drop_push = self.PacketQuery(drop_packet, 1)
+        print drop_push 
+        drop = dict([
+            ('LeftDrop', drop_push[3]),
+            ('RightDrop', drop_push[2]),
+            ('LeftBump', drop_push[1]),
+            ('RightBump', drop_push[0])
+        ])
 
-        return drop_push[0], drop_push[1], drop_push[2], drop_push[3]
+        return drop
 
     def readCliff(self):
         # Left 
@@ -113,34 +121,40 @@ class RoombaControl:
         # Virtual Wall
         virtual_wall_state = str(self.PacketQuery(virtual_wall, 1))
 
-        return left_cliff, left_front, right_cliff, right_front, virtual_wall_state
+        cliff = dict([
+            ('LeftCliff', left_cliff),
+            ('FrontLeft', left_front),
+            ('RightCliff', right_cliff),
+            ('FrontFight', right_front),
+            ('VirtualWall', virtual_wall_state)
+        ])
 
-        #TODO deal with signed ints
-        def DistanceRead(self):
-            distance_read = self.PacketSignedQuery(distance_packet, 2)
-            return distance_read
+        return cliff
+        
+    def DistanceRead(self):
+        distance_read = self.PacketSignedQuery(distance_packet, 2)
+        return distance_read
 
-        #TODO deal with signed ints and converting to radians - do we need to divide?
-        def AngleRead(self):
-            angle_read = self.PacketSignedQuery(angle_read, 2)
-            return angle_read / angle_divisor
+    def AngleRead(self):
+        angle_read = str(self.PacketSignedQuery(angle_packet, 2))
+        angle_read = int(angle_read[1])
+        return angle_read / angle_divisor
 
-        def DriveDirect(self, rightVelocity, leftVelocity):
-            direct_pack = struct.pack('>B2h', drive_direct, rightVelocity, leftVelocity)
-            self.Interface.send(direct_pack)
+    def DriveDirect(self, rightVelocity, leftVelocity):
+        direct_pack = struct.pack('>B2h', drive_direct, rightVelocity, leftVelocity)
+        self.Interface.send(direct_pack)
 
-        def Song(self, song_length, note_length):
-            count = song_length / note_length
-            notes = []
-            while count > 0:
-                print("Enter note frequency: ")
-                notes.append(raw_input)
-                notes.append(note_length)
-            song = struct.pack('BBBB', song, 1, song_length, notes)
-            self.Interface.send(song)
-
-                
+    def Song(self, song_length, note_length):
+        count = song_length / note_length
+        notes = []
+        while count > 0:
+            print("Enter note frequency: ")
+            notes.append(raw_input)
+            notes.append(note_length)
+        song = struct.pack('BBBB', song, 1, song_length, notes)
+        self.Interface.send(song)
+       
 roomba = RoombaControl()
-
-while True:
-    print(roomba.readDrop())
+roomba.FullMode()
+roomba.DriveDirect(10, 100)
+time.sleep(5)
