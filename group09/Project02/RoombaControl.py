@@ -55,6 +55,7 @@ class RoombaControl:
     # Default Constructor - connects to the romba
     def __init__(self):
         self.Interface = Interface()
+        self.FullMode()
     
     # Sets the set of the robot
     def state(self, state):
@@ -63,7 +64,7 @@ class RoombaControl:
 
     # Gets a string of the buttons hit 
     def readButton(self):
-        sent_string = struct.pack('BB', query, button_packet); # ask for the button state
+        sent_string = struct.pack('BB', query, button_packet) # ask for the button state
         self.Interface.send(sent_string) 
         received_string = self.Interface.read(1) # read in the state
 
@@ -85,7 +86,7 @@ class RoombaControl:
         recieved_string = self.Interface.read(packet_size)
         return struct.unpack('B', recieved_string)
 
-    def PacketSignedQuery(self, packet, packet_size):
+    def PacketSignedQuery( self, packet, packet_size):
         sent_string = struct.pack('bb' , query, packet)
         self.Interface.send(sent_string)
         recieved_string = self.Interface.read(packet_size)
@@ -94,14 +95,7 @@ class RoombaControl:
     def readDrop(self):
         drop_push = str(self.PacketQuery(drop_packet, 1))
 
-        drop = dict([
-            ('LeftDrop', drop_push[3]),
-            ('RightDrop', drop_push[2]),
-            ('LeftBump', drop_push[1]),
-            ('RightBump', drop_push[0])
-        ])
-
-        return drop
+        return drop_push[0], drop_push[1], drop_push[2], drop_push[3]
 
     def readCliff(self):
         # Left 
@@ -119,14 +113,7 @@ class RoombaControl:
         # Virtual Wall
         virtual_wall_state = str(self.PacketQuery(virtual_wall, 1))
 
-        cliff = dict([
-            ('LeftCliff', left_cliff),
-            ('FrontLeft', left_front),
-            ('RightCliff', right_cliff),
-            ('FrontFight', right_front),
-            ('VirtualWall', virtual_wall)
-        ])
-        return cliff
+        return left_cliff, left_front, right_cliff, right_front, virtual_wall_state
 
         #TODO deal with signed ints
         def DistanceRead(self):
@@ -156,4 +143,4 @@ class RoombaControl:
 roomba = RoombaControl()
 
 while True:
-    roomba.readDrop()
+    print(roomba.readDrop())

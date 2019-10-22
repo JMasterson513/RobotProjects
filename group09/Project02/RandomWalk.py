@@ -6,8 +6,7 @@ passive = 128
 # Opcode for safe mode
 safe = 131
 
-def RandomWalk:
-
+class RandomWalk:
     # Initializes the connection and sets robot in safe and passive modes
     def __init__(self):
         self.Control = RoombaControl()
@@ -15,9 +14,6 @@ def RandomWalk:
         self.Control.state(safe)
 
     def Walk(self):
-        drop_sensors = self.Control.readDrop()
-        cliff_sensors self.Control.readCliff()
-
         
         # if roomba is stopped
         
