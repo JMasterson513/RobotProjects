@@ -6,6 +6,13 @@ passive = 128
 # Opcode for safe mode
 safe = 131
 
+# optimal sleep time after reading a command
+sleep = 0.0125
+
+# Velocity
+velocity_left = 150
+velocity_right = 150
+
 def RandomWalk:
 
     # Initializes the connection and sets robot in safe and passive modes
@@ -15,11 +22,12 @@ def RandomWalk:
         self.Control.state(safe)
 
     def Walk(self):
-        drop_sensors = self.Control.readDrop()
-        cliff_sensors self.Control.readCliff()
+	
+	global walk_run
 
-        
-        # if roomba is stopped
+	while True:
+            self.Control.DriveDirect(velocity_left, velocity_right)
+         # if roomba is stopped
         
         # if none of the drops or cliffs are activated
         
@@ -38,9 +46,27 @@ def RandomWalk:
         global run
 
         # Loop the whole time checking the state of the button
-        while done:
-            time.sleep(button_sleep) # provides space between button presses so there is no double reading 
+        while True:
+            time.sleep(sleep) # provides space between button presses so there is no double reading 
             button_state = bool(self.State.readState())
             if(button_state):
                 run = not run # Switches between running and not running
-               
+    #Thread for the drop Sensor
+    def readDrop(self):
+	global drop_run
+	
+	while True:
+	    drop_state = bool(self.State.readDrop())
+	    if(drop_state):
+		drop_run = not drop_run
+		
+    #Thread for the cliff Sensor
+    def readCliff(self):
+        global cliff_run
+	
+	while True:
+	    cliff_state = bool(self.State.readDrop())
+	    if(cliff_state):
+	        cliff_run = not cliff_run
+
+
