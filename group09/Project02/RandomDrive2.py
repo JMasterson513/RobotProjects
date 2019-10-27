@@ -1,3 +1,5 @@
+# Copyright 2019 Joe Masterson, Cassidy Carter, and Alfred Stephenson II
+
 from State import State
 import time
 import random
