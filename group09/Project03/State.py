@@ -53,30 +53,46 @@ class State:
 
     def readButton(self):
         self.Interface.send(struct.pack('BB', query, button_packet))
-        time.sleep(0.015)
+        #time.sleep(0.015)
         returned_string = self.Interface.read(1)
         button_state = struct.unpack('B', returned_string)[0]
         return bool(button_state & 0x01)
+
+    def readLeftBumper(self):
+	ir_packet = struct.pack('BB', query, 46)
+	self.Interface.send(ir_packet)
+	recieved_Irpacket = self.Interface.read(2)
+	ir_unpacked = struct.unpack('>H', recieved_Irpacket)[0]
+	return ir_unpacked
+    
+    def readRightBumper(self):
+	ir_packet = struct.pack('BB', query, 51)
+	self.Interface.send(ir_packet)
+	recieved_Irpacket = self.Interface.read(2)
+	ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
+	return ir_packet
 
     def readIR(self):
 	ir_packet = struct.pack('BB', query, 45)
 	self.Interface.send(ir_packet)
 	recieved_Irpacket = self.Interface.read(1)
 	ir_unpacked = struct.unpack('B', recieved_Irpacket)[0]
-	bump_left = bool(ir_unpacked & 0x01)
-	bump_front_left = bool(ir_unpacked & 0x02)
-	bump_center_left = bool(ir_unpacked & 0x04)
-	bump_center_right = bool(ir_unpacked & 0x08)
-	bump_front_right = bool(ir_unpacked & 0x16)
-	bump_right = bool(ir_unpacked & 0x32)
+	bump_left = (ir_unpacked & 0x01)
+	bump_front_left = (ir_unpacked & 0x02)
+	bump_center_left = (ir_unpacked & 0x04)
+	bump_center_right = (ir_unpacked & 0x08)
+	bump_front_right = (ir_unpacked & 0x16)
+	bump_right = (ir_unpacked & 0x32)
 	return bump_left, bump_front_left, bump_center_left, bump_center_right, bump_front_right, bump_right
 
-#roomba = State()
-#roomba.state(128)
-#roomba.state(131)
-#while True:
-	#time.sleep(0.25)
-	#print roomba.readIR()
+roomba = State()
+roomba.state(128)
+roomba.state(131)
+while True:
+	time.sleep(0.25)
+	print("Left: {}".format(roomba.readLeftBumper()))
+	print("Right: {}".format(roomba.readRightBumper()))
+	print " "
 	#print "end of loop"
 
 

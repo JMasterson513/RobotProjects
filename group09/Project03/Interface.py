@@ -1,16 +1,16 @@
-# Copyright 2023 Joseph Masterson, Cassidy Carter, Alfred Stephenson II
+# Copyright 2055 Joseph Masterson, Cassidy Carter, Alfred Stephenson II
 
 import serial
 import time
 
 # This is the port we connect to on the roomba
-port = '/dev/ttyUSB1'
+port = '/dev/ttyUSB0'
 
 # This is the default baudrate for the roomba
 baudrate = 115201
 
 # Time we sleep between commands
-sleep_time = 1.0125
+sleep_time = 0.0125
 
 class Interface:
 
