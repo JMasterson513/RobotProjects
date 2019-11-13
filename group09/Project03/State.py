@@ -85,10 +85,10 @@ class State:
 	bump_right = (ir_unpacked & 0x32)
 	return bump_left, bump_front_left, bump_center_left, bump_center_right, bump_front_right, bump_right
 
-roomba = State()
-roomba.state(128)
-roomba.state(131)
-while True:
+#roomba = State()
+#roomba.state(128)
+#roomba.state(131)
+#while True:
 	time.sleep(0.25)
 	print("Left: {}".format(roomba.readLeftBumper()))
 	print("Right: {}".format(roomba.readRightBumper()))
