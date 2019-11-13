@@ -6,11 +6,17 @@ positive_velocity = 170
 
 button = False
 
-# Constants for gains
-KP =  .02
-KD =  20
+#Set point varibale
+set_point= 13
 
-target = 45
+# Constants for gains
+KP =  1
+KD =  .2
+
+#Sampling  Time
+sampling_time= .005
+
+#target = 45
 
 class test:
 	
@@ -32,12 +38,27 @@ class test:
 	def stop(self):
 	    self.State.driveDirect(0,0)          
 	
-	def wallFollow(self):
-	    while True:
-		   	        	    
+	#def wallFollow(self):
+	    #while True:
+
+	def calculateLeftError(self):
+	    return self.State.readLeftBumper() - set_point
+
+	def calculateRightError(self):
+	    return self.State.readRightBumper() - set_point
+	
+	def calculatePController(self):
+	    return KP*(self.calculatedLeftError())
+
+	def calculatedDController(self):
+	    return KD*(self.calculatedLeftError()/sampling_time)
 
 roomba = test()
 button = False
-roomba.drive()
-time.sleep(3)
+while True:
+	time.sleep(1)
+	#print ("Left Error Expected: {}".format(roomba.State.readLeftBumper() - set_point))
+	#print("Left Error Recieved: {}".format(roomba.calculateLeftError()))
+	print("Right Error Expected: {}".format(roomba.State.readRightBumper() - set_point))
+	print("Right Error Recieved: {}".format(roomba.calculateRightError()))
 roomba.stop()
