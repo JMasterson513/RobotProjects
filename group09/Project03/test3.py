@@ -10,11 +10,11 @@ button = False
 set_point= 495
 
 # Constants for gains
-KP =  1
+KP = 1 
 KD =  .2
 
 #Sampling  Time
-sampling_time= .05
+sampling_time= .075
 
 sleep_time = 0.025
 
@@ -51,13 +51,14 @@ class test:
                 return False
 
         def newErrorCalc(self): 
-            side = self.whichState()
-            if (side):
-                error = self.State.readRightBumper() - set_point
-                error_list.append(error)
-            else:
-                error = self.State.readLeftBumper() - set_point
-                error_list.append(error)
+            #side = self.whichState()
+            #if (side):
+                #error = self.State.readRightBumper() - set_point
+                #error_list.append(error)
+            #else:
+            error = self.State.readRightBumper() - set_point
+            error_list.append(error)
+            print "error calculated"
 
         def PDController(self):
             time.sleep(sleep_time)
@@ -66,24 +67,29 @@ class test:
             #print("U_p: {}".format(Up))
             U_d = KD * ((error_list[-1] - error_list[-2]) / sampling_time)
             U = U_p + U_d
+            print "u returned"
             return U
         
         def driveController(self):
-            side = self.whichState()
+            #side = False
             while True:
                 U_current = self.PDController()
-                if(U_current <0):
-                    self.State.driveDirect(170,-170) if side else self.State.driveDirect(-170,170)
-                elif(U_current ==0):    
-                    self.State.driveDirect(-170,170) if side else self.State.driveDirect(170,-170)
-                else:
-                    self.drive()
+                print U_current
+                if(U_current  < 0):
+                    self.State.driveDirect(-170,170)
+                    time.sleep(sleep_time)
+                elif(U_current > 0):
+                    self.State.driveDirect(170,-170)
+                    time.sleep(sleep_time)
+                #elif(U_current ==0):    
+                    #self.State.driveDirect(-170,170) if side else self.State.driveDirect(170,-170)
+                self.drive()
                                 
 roomba = test()
 while True:
-        print(roomba.whichState())
+        #print(roomba.whichState())
         #print(roomba.PDController())
-        #roomba.driveController()
+        roomba.driveController()
         #print(roomba.PDController())
 	#print ("Left Error Expected: {}".format(roomba.State.readLeftBumper() - set_point))
         #roomba.newErrorCalc()
