@@ -5,10 +5,9 @@ import time
 positive_velocity = 170
 
 button = False
-side = False
 
 #Set point varibale
-set_point= 13
+set_point= 495
 
 # Constants for gains
 KP =  1
@@ -42,12 +41,17 @@ class test:
 	    self.State.driveDirect(0,0)         
         
         def whichState(self):
-            global side
             right_state = self.State.readRightBumper()
+            print("Right State: {}".format(right_state))
             left_state = self.State.readLeftBumper()
-            side = True if right_state > left_state else False
-       
+            print("Left State: {}".format(left_state))
+            if(right_state > left_state):
+                return True
+            else:
+                return False
+
         def newErrorCalc(self): 
+            side = self.whichState()
             if (side):
                 error = self.State.readRightBumper() - set_point
                 error_list.append(error)
@@ -61,14 +65,26 @@ class test:
             U_p = KP * (error_list[-1])
             #print("U_p: {}".format(Up))
             U_d = KD * ((error_list[-1] - error_list[-2]) / sampling_time)
-            U_ = U_p + U_d
-            return U_
-
+            U = U_p + U_d
+            return U
         
+        def driveController(self):
+            side = self.whichState()
+            while True:
+                U_current = self.PDController()
+                if(U_current <0):
+                    self.State.driveDirect(170,-170) if side else self.State.driveDirect(-170,170)
+                elif(U_current ==0):    
+                    self.State.driveDirect(-170,170) if side else self.State.driveDirect(170,-170)
+                else:
+                    self.drive()
+                                
 roomba = test()
 while True:
-        roomba.whichState()
-        print(roomba.PDController())
+        print(roomba.whichState())
+        #print(roomba.PDController())
+        #roomba.driveController()
+        #print(roomba.PDController())
 	#print ("Left Error Expected: {}".format(roomba.State.readLeftBumper() - set_point))
         #roomba.newErrorCalc()
 	#print("Left Error Recieved: {}".format(error_list[-1]))

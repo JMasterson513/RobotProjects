@@ -59,17 +59,19 @@ class State:
         return bool(button_state & 0x01)
 
     def readLeftBumper(self):
-	ir_packet = struct.pack('BB', query, 46)
-	self.Interface.send(ir_packet)
+        self.Interface.send(chr(142)+chr(51))
+	#ir_packet = struct.pack('BB', query, 46)
+	#self.Interface.send(ir_packet)
 	recieved_Irpacket = self.Interface.read(2)
 	ir_unpacked = struct.unpack('>H', recieved_Irpacket)[0]
 	return ir_unpacked
     
     def readRightBumper(self):
-	ir_packet = struct.pack('BB', query, 51)
-	self.Interface.send(ir_packet)
-	recieved_Irpacket = self.Interface.read(2)
-	ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
+	self.Interface.send(chr(142)+ chr(51))
+        #ir_packet = struct.pack('BB', query, 51)
+	#self.Interface.send(ir_packet)
+        recieved_Irpacket = self.Interface.read(2)
+        ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
 	return ir_packet
 
     def readIR(self):
@@ -89,10 +91,9 @@ class State:
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-	time.sleep(0.25)
-	print("Left: {}".format(roomba.readLeftBumper()))
-	print("Right: {}".format(roomba.readRightBumper()))
-	print " "
+	#print("Left: {}".format(roomba.readLeftBumper()))
+	#print("Right: {}".format(roomba.readRightBumper()))
+	#print " "
 	#print "end of loop"
 
 
