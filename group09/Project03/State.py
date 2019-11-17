@@ -66,6 +66,14 @@ class State:
 	ir_unpacked = struct.unpack('>H', recieved_Irpacket)[0]
 	return ir_unpacked
     
+    def readCenterBumper(self):
+        self.Interface.send(chr(142)+chr(48))
+        recieved_Irpacket = self.Interface.read(2)
+        ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
+        if (ir_packet > 495):
+            return True
+        return False
+
     def readRightBumper(self):
 	self.Interface.send(chr(142)+ chr(51))
         #ir_packet = struct.pack('BB', query, 51)
@@ -91,8 +99,10 @@ roomba = State()
 roomba.state(128)
 roomba.state(131)
 #while True:
-	#print("Left: {}".format(roomba.readLeftBumper()))
-    	#print("Right: {}".format(roomba.readRightBumper()))
+    #time.sleep(.1)
+    #print("Center: {}".format(roomba.readCenterBumper()))
+    #time.sleep(.5)
+    #print("Right: {}".format(roomba.readRightBumper()))
 	#print " "
 	#print "end of loop"
 
