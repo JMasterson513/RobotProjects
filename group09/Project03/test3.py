@@ -8,7 +8,7 @@ positive_velocity = 170
 button = False
 
 #Set point varibale
-set_point= 495
+set_point= 300
 
 # Constants for gains
 KP = 1 
