@@ -70,7 +70,7 @@ class State:
         self.Interface.send(chr(142)+chr(48))
         recieved_Irpacket = self.Interface.read(2)
         ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
-        if (ir_packet > 495):
+        if (ir_packet > 300):
             return True
         return False
 
