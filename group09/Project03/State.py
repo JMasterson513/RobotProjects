@@ -53,7 +53,6 @@ class State:
 
     def readButton(self):
         self.Interface.send(struct.pack('BB', query, button_packet))
-        #time.sleep(0.015)
         returned_string = self.Interface.read(1)
         button_state = struct.unpack('B', returned_string)[0]
         return bool(button_state & 0x01)
@@ -98,11 +97,12 @@ class State:
 roomba = State()
 roomba.state(128)
 roomba.state(131)
-#while True:
+while True:
+    #print("Button: {}".format(roomba.readButton()))
     #time.sleep(.1)
     #print("Center: {}".format(roomba.readCenterBumper()))
     #time.sleep(.5)
-    #print("Right: {}".format(roomba.readRightBumper()))
+    print("Right: {}".format(roomba.readRightBumper()))
 	#print " "
 	#print "end of loop"
 
