@@ -1,4 +1,4 @@
-# Copyright 2055 Joseph Masterson, Cassidy Carter, Alfred Stephenson II
+# Copyright 2019 Joseph Masterson, Cassidy Carter, Alfred Stephenson II
 
 import serial
 import time

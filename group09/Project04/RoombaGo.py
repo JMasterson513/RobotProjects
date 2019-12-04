@@ -1,3 +1,5 @@
+# Copyright 2019 Cassidy Carter, Joseph Masterson, and Alfred Stephenson II
+
 from State import State
 import time
 
@@ -5,10 +7,13 @@ import time
 velocity = 170
 
 #ir setpoint
-ir_setpoint = 0
+ir_setpoint = 172
+
+#wall setpoint
+wall_set = 300
 
 #error list
-error_list = [0]
+wall_list = [0]
 
 #sleep time
 sleep_time = 0.035
@@ -25,9 +30,49 @@ class findIR:
 
     def drive(self):
         self.State.driveDirect(velocity, velocity)
+    
+    def Stop(self):
+        self.State.driveDirect(0,0)
+    
+    def WallError(self):
+        error = self.State.readRightBumper() - wall_set
+        wall_list.append(error)
+
+    def WallController(self):
+        time.sleep(sleep_time)
+        self.newErrorCalc()
+        U_p = KP * (wall_list[-1])
+        U = U_p + U_d
+        return U
+
+    def centerWall(self):
+        wall=self.State.readCenterBumper()
+        if(wall):
+            time.sleep(.1)
+            self.State.driveDirect(170,-170)
+            time.sleep((math.radians(45))/(((170*2)/235)))
+
+    def WallFollow(self):
+        while True:
+            U_current = self.PDController()
+            wall = self.State.readCenterBumper()
+            print("Wall Current {}".format(U_current))
+            print("Center State {}".format(wall))
+            self.centerWall()
+            if(U_current  < 0):
+                self.State.driveDirect(-170,170)
+                time.sleep(sleep_time)
+            elif(U_current > 0):
+                self.State.driveDirect(170,-170)
+                time.sleep(sleep_time)
+            self.drive()
+
+    def chargingState(self):
+        charge = self.State.isBatteryCharge()
+        return bool(charge)
 
     def IRerrorCalc(self):
-        error = self.State.readCenterBumper() - ir_setpoint
+        error = self.State.readIROmni() - ir_setpoint
         error_list.append(error)
     
     def DockController(self):
@@ -35,26 +80,25 @@ class findIR:
         self.IRerrorCalc()
         Up = KP * (error_list[-1])
         Ud = KD * (error_list[-1] - error_list[-2])
-    
-    def Stop(self):
-        self.State.driveDirect(0,0)
+        return Up + Ud
+
+    def DockDrive(self):
+        while True:
+            U_current = self.DockController()
 
 roomba = findIR()
 while True:
     state = roomba.State.readIROmni()
-    print state
-    #if(roomba.State.readCenterBumper()):
-        #print roomba.State.readCenterBumper()
-        #roomba.Stop()
-        #continue
-    if(state == 168):
-        roomba.State.driveDirect(170, 180)
-    elif(state == 164):
-        roomba.State.driveDirect(180, 170)
-    elif(state == 161):
-        roomba.State.driveDirect(170,170)
-    elif(roomba.State.readCenterBumper()):
-        print roomba.State.readCenterBumper()
-        roomba.Stop()
-        continue
-        
+    print("IR State {}".format(state))
+    #if(state == 168):
+        #print("Turn Left")
+        #roomba.State.driveDirect(100, 110)
+        #time.sleep(0.05)
+    #elif(state == 164):
+        #print("Turn Right")
+        #roomba.State.driveDirect(110, 100)
+        #time.sleep(0.05)
+    #elif(state == 161):
+        #print("Drive Straight")
+        #roomba.State.driveDirect(100,100)    
+        #time.sleep(0.05)

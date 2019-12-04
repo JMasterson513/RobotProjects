@@ -30,7 +30,6 @@ class State:
     
     # Sets the set of the robot
     def state(self, state):
-        #self.Interface.send(chr(state))
         self.Interface.send(struct.pack('B', state))
 
     # Gets a string of the buttons hit 
@@ -53,21 +52,18 @@ class State:
 
     def readButton(self):
         self.Interface.send(struct.pack('BB', query, button_packet))
-        #time.sleep(0.015)
         returned_string = self.Interface.read(1)
         button_state = struct.unpack('B', returned_string)[0]
         return bool(button_state & 0x01)
 
     def readLeftBumper(self):
-        self.Interface.send(chr(142)+chr(46))
-	#ir_packet = struct.pack('BB', query, 46)
-	#self.Interface.send(ir_packet)
-	recieved_Irpacket = self.Interface.read(2)
-	ir_unpacked = struct.unpack('>H', recieved_Irpacket)[0]
-	return ir_unpacked
+        self.Interface.send(chr(142) + chr(46))
+        recieved_packet = self.Interface.read(2)
+        ir_unpacked = struct.unpack('>H', recieved_packet)[0]
+        return ir_unpacked
     
     def readCenterBumper(self):
-        self.Interface.send(chr(142)+chr(48))
+        self.Interface.send(chr(142) + chr(48))
         recieved_Irpacket = self.Interface.read(2)
         ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
         if (ir_packet > 100):
@@ -75,12 +71,10 @@ class State:
         return False
 
     def readRightBumper(self):
-	self.Interface.send(chr(142)+ chr(51))
-        #ir_packet = struct.pack('BB', query, 51)
-	#self.Interface.send(ir_packet)
-        recieved_Irpacket = self.Interface.read(2)
-        ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
-	return ir_packet
+        self.Interface.send(chr(142) + chr(51))
+        recieved_packet = self.Interface.read(2)
+        ir_packet = struct.unpack('>H', recieved_packet)[0]
+        return ir_packet
 
     def readIROmni(self):
         self.Interface.send(chr(142)+chr(17))
@@ -88,16 +82,17 @@ class State:
         ir_packet = struct.unpack('B', recieved_packet)[0]
         return ir_packet
 
+    def isBatteryCharge(self):
+        self.Interface.send(chr(142) + chr(21))
+        recieved_packet = self.Interface.read(1)
+        battery_state = struct.unpack('b', recieved_packet)[0]
+        return battery_state
+
 #roomba = State()
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-#    print roomba.readIROmni()
-    #print("Center: {}".format(roomba.readCenterBumper()))
-    #time.sleep(.5)
-    #print("Right: {}".format(roomba.readRightBumper()))
-	#print " "
-	#print "end of loop"
+    #print(roomba.isBatteryCharge())
 
 
 
