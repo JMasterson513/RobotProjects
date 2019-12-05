@@ -88,19 +88,21 @@ class findIR:
 
 roomba = findIR()
 while True:
-    state = roomba.State.readIROmni()
-    #time.sleep(.)
+    state = roomba.State.readIROmni() 
     print("IR State {}".format(state))
+    if(roomba.State.readCenterBumper() == True):
+        roomba.State.driveDirect(30,30)
+        time.sleep(0.05)
     if(state == 168):
         print("Turn left")
-        roomba.State.driveDirect(80, -90)
+        roomba.State.driveDirect(100, -95)
         time.sleep(0.05)
     elif(state == 164):
         print("Turn right")
-        roomba.State.driveDirect(-90, 80)
+        roomba.State.driveDirect(-95, 100)
         time.sleep(0.05)
     elif(state == 172):
-        roomba.State.driveDirect(80, 80) 
+        roomba.State.driveDirect(100, 100) 
         time.sleep(0.05)
     #elif(roomba.State.isBatteryCharge() == 2):
         #roomba.State.driveDirect(0,0)
