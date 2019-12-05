@@ -68,7 +68,7 @@ class findIR:
             self.drive()
 
     def chargingState(self):
-        charge = self.State.isBatteryCharge()
+        charge = roomba.State.isBatteryCharge()
         return bool(charge)
 
     def IRerrorCalc(self):
@@ -89,16 +89,19 @@ class findIR:
 roomba = findIR()
 while True:
     state = roomba.State.readIROmni()
+    #time.sleep(.)
     print("IR State {}".format(state))
-    #if(state == 168):
-        #print("Turn Left")
-        #roomba.State.driveDirect(100, 110)
-        #time.sleep(0.05)
-    #elif(state == 164):
-        #print("Turn Right")
-        #roomba.State.driveDirect(110, 100)
-        #time.sleep(0.05)
-    #elif(state == 161):
-        #print("Drive Straight")
-        #roomba.State.driveDirect(100,100)    
-        #time.sleep(0.05)
+    if(state == 168):
+        print("Turn left")
+        roomba.State.driveDirect(80, -90)
+        time.sleep(0.05)
+    elif(state == 164):
+        print("Turn right")
+        roomba.State.driveDirect(-90, 80)
+        time.sleep(0.05)
+    elif(state == 172):
+        roomba.State.driveDirect(80, 80) 
+        time.sleep(0.05)
+    #elif(roomba.State.isBatteryCharge() == 2):
+        #roomba.State.driveDirect(0,0)
+        #print("We are Charging")
