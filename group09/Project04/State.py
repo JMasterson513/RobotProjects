@@ -86,13 +86,14 @@ class State:
         self.Interface.send(chr(142) + chr(21))
         recieved_packet = self.Interface.read(1)
         battery_state = struct.unpack('b', recieved_packet)[0]
-        return battery_state
+        if(battery_state == 2):
+            return battery_state
 
 #roomba = State()
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-    #print(roomba.isBatteryCharge())
+    #print(roomba.readIROmni())
 
 
 
