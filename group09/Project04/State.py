@@ -66,7 +66,7 @@ class State:
         self.Interface.send(chr(142) + chr(48))
         recieved_Irpacket = self.Interface.read(2)
         ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
-        if (ir_packet > 100):
+        if (ir_packet > 240):
             return True
         return False
 
@@ -93,7 +93,7 @@ class State:
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-    #print(roomba.readIROmni())
+#    print(roomba.readCenterBumper())
 
 
 
