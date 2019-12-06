@@ -45,8 +45,14 @@ class findIR:
         U = U_p + U_d
         return U
 
+    def readCenterWall(self):
+        wall = self.State.readCenterBumper()
+        if(wall > 300):
+            return True
+        return False
+
     def centerWall(self):
-        wall=self.State.readCenterBumper()
+        wall = self.readCenterWall()
         if(wall):
             time.sleep(.1)
             self.State.driveDirect(170,-170)
@@ -66,6 +72,13 @@ class findIR:
                 self.State.driveDirect(170,-170)
                 time.sleep(sleep_time)
             self.drive()
+
+    def readCenterDock(self):
+        wall = self.State.readCenterBumper()
+        print("Wall State {}".format(wall))
+        if(wall > 240):
+            return True
+        return False
 
     def chargingState(self):
         charge = roomba.State.isBatteryCharge()
@@ -88,22 +101,27 @@ class findIR:
 
 roomba = findIR()
 while True:
-    state = roomba.State.readIROmni() 
+    #print("Center Bump {}".format(roomba.readCenterDock()))
+    state = roomba.State.readIROmni()
     print("IR State {}".format(state))
-    if(roomba.State.readCenterBumper() == True):
-        roomba.State.driveDirect(30,30)
-        time.sleep(0.05)
+    #if(roomba.readCenterDock() == True):
+        #print("Read a Center Bumper")
+        #roomba.State.driveDirect(30,30)
+        #time.sleep(0.05)
     if(state == 168):
         print("Turn left")
-        roomba.State.driveDirect(100, -95)
-        time.sleep(0.05)
+        roomba.State.driveDirect(100, 0)
+        time.sleep(0.01)
     elif(state == 164):
         print("Turn right")
-        roomba.State.driveDirect(-95, 100)
-        time.sleep(0.05)
+        roomba.State.driveDirect(0, 100)
+        time.sleep(0.01)
     elif(state == 172):
-        roomba.State.driveDirect(100, 100) 
-        time.sleep(0.05)
-    #elif(roomba.State.isBatteryCharge() == 2):
-        #roomba.State.driveDirect(0,0)
+        while(state == 172):
+            roomba.State.driveDirect(100, 100)
+            break
+            #time.sleep(0.05)
+    elif(roomba.State.isBatteryCharge() == 2):
+        roomba.State.driveDirect(0,0)
+        break
         #print("We are Charging")

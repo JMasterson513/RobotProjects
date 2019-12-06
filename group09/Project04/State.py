@@ -66,9 +66,7 @@ class State:
         self.Interface.send(chr(142) + chr(48))
         recieved_Irpacket = self.Interface.read(2)
         ir_packet = struct.unpack('>H', recieved_Irpacket)[0]
-        if (ir_packet > 240):
-            return True
-        return False
+        return ir_packet
 
     def readRightBumper(self):
         self.Interface.send(chr(142) + chr(51))
@@ -88,12 +86,18 @@ class State:
         battery_state = struct.unpack('b', recieved_packet)[0]
         if(battery_state == 2):
             return battery_state
+    
+    def stream(self):
+        self.Interface.send(chr(148) + chr(3) + chr(17) + chr(21) + chr(48))
+        recieved_packet = self.Interface.read(4)
+        stream_state =  struct.unpack('I', recieved_packet)
+        return stream_state
 
 #roomba = State()
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-#    print(roomba.readCenterBumper())
+    #print(roomba.stream())
 
 
 
