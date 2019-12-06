@@ -117,11 +117,13 @@ while True:
         roomba.State.driveDirect(0, 100)
         time.sleep(0.01)
     elif(state == 172):
-        while(state == 172):
+        while(roomba.State.readIROmni() == 172):
             roomba.State.driveDirect(100, 100)
-            break
-            #time.sleep(0.05)
-    elif(roomba.State.isBatteryCharge() == 2):
-        roomba.State.driveDirect(0,0)
-        break
+            time.sleep(0.05)
+            if(roomba.State.isBatteryCharge() == 2):
+                roomba.State.drveDirect(0, 0)
+                break
+    #elif(roomba.State.isBatteryCharge() == 2):
+        #roomba.State.driveDirect(0,0)
+        #break
         #print("We are Charging")
