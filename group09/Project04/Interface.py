@@ -7,7 +7,7 @@ import time
 port = '/dev/ttyUSB0'
 
 # This is the default baudrate for the roomba
-baudrate = 115201
+baudrate = 115200
 
 # Time we sleep between commands
 sleep_time = 0.0125
