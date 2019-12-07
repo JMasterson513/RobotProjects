@@ -2,6 +2,7 @@
 
 from State import State
 import time
+import math
 
 #constant velocity
 velocity = 170
@@ -99,31 +100,43 @@ class findIR:
         while True:
             U_current = self.DockController()
 
+    def Dock(self):
+        while True:
+            state= self.State.readIROmni()
+            print("IR State{} ".format(state))
+            if(self.State.isBatteryCharge() ==2):
+                self.State.driveDirect(0,0)
+            elif(state==168):
+                print("Turn Left")
+                self.State.driveDirect(90,0)
+                time.sleep(0.01)
+            elif(state ==164):
+                print("Turn Right")
+                self.State.driveDirect(0,90)
+                time.sleep(0.01)
+            elif(state ==172):
+                while(self.State.readIROmni() ==172):
+                    self.State.driveDirect(100,100)
+                    time.sleep(0.05)
+                    if(self.State.isBatteryCharge()==2):
+                        self.State.driveDirect(0,0)
+                        break
+
+    def turn(self):
+        angle = math.radians(135)
+        omega = (2 * 170) / 235.0
+        turn_sleep = (angle / omega)
+        self.State.driveDirect(-170, 170)
+        time.sleep(turn_sleep)
+    
+    def sideDock(self):
+        self.State.driveDirect(250,200)
+        time.sleep(2.5)
+        self.State.driveDirect(0,0)
+        time.sleep(.5)
+        self.turn()
+        self.State.driveDirect(0, 0)
+        self.Dock()
+
 roomba = findIR()
-while True:
-    #print("Center Bump {}".format(roomba.readCenterDock()))
-    state = roomba.State.readIROmni()
-    print("IR State {}".format(state))
-    #if(roomba.readCenterDock() == True):
-        #print("Read a Center Bumper")
-        #roomba.State.driveDirect(30,30)
-        #time.sleep(0.05)
-    if(state == 168):
-        print("Turn left")
-        roomba.State.driveDirect(100, 0)
-        time.sleep(0.01)
-    elif(state == 164):
-        print("Turn right")
-        roomba.State.driveDirect(0, 100)
-        time.sleep(0.01)
-    elif(state == 172):
-        while(roomba.State.readIROmni() == 172):
-            roomba.State.driveDirect(100, 100)
-            time.sleep(0.05)
-            if(roomba.State.isBatteryCharge() == 2):
-                roomba.State.drveDirect(0, 0)
-                break
-    #elif(roomba.State.isBatteryCharge() == 2):
-        #roomba.State.driveDirect(0,0)
-        #break
-        #print("We are Charging")
+roomba.sideDock()

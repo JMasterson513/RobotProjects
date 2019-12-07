@@ -97,7 +97,7 @@ class State:
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-    #print(roomba.stream())
+    #print(roomba.readIROmni())
 
 
 
