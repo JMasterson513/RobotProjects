@@ -7,17 +7,17 @@ import math
 #constant velocity
 velocity = 170
 
-#ir setpoint
-ir_setpoint = 172
-
 #wall setpoint
-wall_set = 300
+wall_set = 400
 
 #error list
-wall_list = [0]
+wall_list = [0, 0]
 
 #sleep time
 sleep_time = 0.035
+
+# Time bettwen each sample in the controller
+sampling_time = 0.085
 
 #PD Controller Constants
 KP = 1
@@ -36,43 +36,33 @@ class findIR:
         self.State.driveDirect(0,0)
     
     def WallError(self):
-        error = self.State.readRightBumper() - wall_set
+        wall_reading = self.State.readRightBumper()
+        error = wall_reading - wall_set
         wall_list.append(error)
 
     def WallController(self):
         time.sleep(sleep_time)
-        self.newErrorCalc()
+        self.WallError()
+        if(wall_list[-1] == -1 * wall_set):
+            return -1 * wall_set
         U_p = KP * (wall_list[-1])
+        U_d = KD * ((wall_list[-1] - wall_list[-2]) / sampling_time)
         U = U_p + U_d
-        return U
-
-    def readCenterWall(self):
-        wall = self.State.readCenterBumper()
-        if(wall > 300):
-            return True
-        return False
-
-    def centerWall(self):
-        wall = self.readCenterWall()
-        if(wall):
-            time.sleep(.1)
-            self.State.driveDirect(170,-170)
-            time.sleep((math.radians(45))/(((170*2)/235)))
+        if(U < 0):
+            return -1 * math.sqrt(-1 * U)
+        return math.sqrt(U)
 
     def WallFollow(self):
-        while True:
-            U_current = self.PDController()
-            wall = self.State.readCenterBumper()
-            print("Wall Current {}".format(U_current))
-            print("Center State {}".format(wall))
-            self.centerWall()
-            if(U_current  < 0):
-                self.State.driveDirect(-170,170)
-                time.sleep(sleep_time)
-            elif(U_current > 0):
-                self.State.driveDirect(170,-170)
-                time.sleep(sleep_time)
-            self.drive()
+        state = self.State.readIROmni()
+        while(state <= 150):
+            print("IR State in Wall Follow {}".format(state))
+            U_current = self.WallController()
+            while(U_current == -400):
+                self.State.driveDirect(0, 100)
+                U_current  = self.WallController()
+            self.State.driveDirect(100 + U_current, 100)
+            state = self.State.readIROmni()
+        self.whichSide()
 
     def readCenterDock(self):
         wall = self.State.readCenterBumper()
@@ -120,7 +110,15 @@ class findIR:
                     time.sleep(0.05)
                     if(self.State.isBatteryCharge()==2):
                         self.State.driveDirect(0,0)
+                        self.Play()
                         break
+
+    def Play(self):
+        self.State.state(132)
+        print("stuff")
+        self.State.Play(1)
+        self.State.state(128)
+        self.State.state(131)
 
     def turn(self):
         angle = math.radians(135)
@@ -138,5 +136,18 @@ class findIR:
         self.State.driveDirect(0, 0)
         self.Dock()
 
+    def whichSide(self):
+        state = self.State.readIROmni()
+        print(state)
+        if(state == 161):
+            self.sideDock()
+        else:
+            self.Dock()
+    
+    def FollowAndDock(self):
+        self.WallFollow()
+        self.whichSide()
+    
+
 roomba = findIR()
-roomba.sideDock()
+roomba.WallFollow()

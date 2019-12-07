@@ -22,6 +22,12 @@ drive_opcode = 145
 # Packet which tells state of the buttons
 button_packet = 18
 
+#Opcode to code a song
+song_opcode = 140
+
+#Opcode to play a song
+play_opcode =141
+
 class State:
 
     # Default Constructor - connects to the romba
@@ -86,6 +92,14 @@ class State:
         battery_state = struct.unpack('b', recieved_packet)[0]
         if(battery_state == 2):
             return battery_state
+
+    def Song(self):
+        song = struct.pack('BBBBBBB', song_opcode, 1 , 2, 90 ,250, 70, 250)
+        self.Interface.send(song)
+
+    def Play(self, song_number):
+        play_string = struct.pack('BB' , play_opcode, song_number)
+        self.Interface.send(play_string)
     
     def stream(self):
         self.Interface.send(chr(148) + chr(3) + chr(17) + chr(21) + chr(48))
@@ -97,7 +111,7 @@ class State:
 #roomba.state(128)
 #roomba.state(131)
 #while True:
-    #print(roomba.readIROmni())
+    #print(roomba.readRightBumper())
 
 
 
