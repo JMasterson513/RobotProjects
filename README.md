@@ -1,4 +1,4 @@
-# CSCE274
+# RobotProjects
 
 Programs to control an iRobot create 2 in a couple of ways.
 
